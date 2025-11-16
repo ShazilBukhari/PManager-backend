@@ -27,7 +27,11 @@ app.post('/', async(req, res) => {
   const passwords = req.body;
   const db = client.db(dbName);
   const collection = db.collection('passwords');
-
+  
+  const alreadyExist = await collection.findOne({sitename:passwords.sitename});
+  if(alreadyExist){
+    return res.send({success:false,message:"Sitename Already Exist"})
+  }
   const findResult = await collection.insertOne(passwords);
   res.send({success:true,result:findResult})
 })
